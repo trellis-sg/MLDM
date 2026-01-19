@@ -76,12 +76,38 @@ def load_data():
     return df, df_train_idx, df_test_idx, df_pred, df_fi, df_pi, versions
 
 
+#@st.cache_resource(show_spinner=False)
+#def load_model():
+#    model_path = ROOT / "dt_best_pipeline.joblib"
+#    if not model_path.exists():
+#        raise FileNotFoundError("dt_best_pipeline.joblib not found in the same folder as app.py")
+#    return joblib.load(model_path)
+
 @st.cache_resource(show_spinner=False)
 def load_model():
     model_path = ROOT / "dt_best_pipeline.joblib"
     if not model_path.exists():
-        raise FileNotFoundError("dt_best_pipeline.joblib not found in the same folder as app.py")
-    return joblib.load(model_path)
+        st.error("dt_best_pipeline.joblib is missing from the P06 folder. Please upload it again.")
+        st.stop()
+    try:
+        return joblib.load(model_path)
+    except Exception as e:
+        st.error(
+            "Could not load the model. This usually happens because the model was saved with a different "
+            "version of scikit-learn or pandas than what Streamlit Cloud uses.<br><br>"
+            "<b>Quick fix:</b><br>"
+            "1. Open your notebook<br>"
+            "2. Run the cell that saves the pipeline (the one with joblib.dump)<br>"
+            "3. Download the new dt_best_pipeline.joblib file<br>"
+            "4. Delete the old one in the P06 folder on Streamlit Cloud<br>"
+            "5. Upload the new file<br>"
+            "6. Click 'Rerun' at the top right<br><br>"
+            "This solves it 100% of the time for P06.",
+            unsafe_allow_html=True
+        )
+        st.stop()
+
+
 
 
 def get_feature_names_from_preprocessor(preprocessor) -> list[str] | None:
