@@ -19,7 +19,8 @@ st.caption(
     "This app explains *model behaviour* (what the model did and why), not real-world cause and effect."
 )
 
-ROOT = Path(__file__).parent
+#ROOT = Path(__file__).parent
+ROOT = Path(__file__).parent / "P06"
 
 
 # -----------------------------
